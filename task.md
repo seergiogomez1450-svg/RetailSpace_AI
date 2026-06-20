@@ -2,11 +2,11 @@
 
 ## 🏗 In Progress / En Curso
 
-- `[/]` Verificación y Pruebas Unitarias
+*(No hay tareas activas en curso)*
 
 ## ⏳ Pending / Pendientes (Backlog)
 
-- `[ ]` Commit y Push a GitHub
+*(No hay tareas pendientes)*
 
 ## ✅ Completed / Completadas
 
@@ -15,5 +15,7 @@
   - `[x]` Modificar `src/index.html` para renombrar a Groq en la UI.
   - `[x]` Modificar `src/js/app.js` para renombrar claves localStorage y variables.
   - `[x]` Modificar `src/js/agent.js` para implementar `queryGroqAPI` en formato OpenAI.
+- `[x]` Verificación y Pruebas Unitarias
+- `[x]` Commit y Push a GitHub
 
 *(Las tareas de la versión anterior se encuentran archivadas en la rama main)*
