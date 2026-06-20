@@ -43,3 +43,7 @@ walkthrough.md
 docs/EvaluacionChatGPT.md
 docs/EvaluacionCopilot.md
 docs/EvaluaciondeClaude.md
+
+# Configuración local de claves
+src/js/config.js
+

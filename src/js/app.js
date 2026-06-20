@@ -70,8 +70,12 @@ function initChat() {
     const btnShowKey = document.getElementById("btn-show-key");
     const apiStatusBadge = document.getElementById("api-status-badge");
 
-    // Load key from localStorage
-    const savedKey = localStorage.getItem("gemini_api_key");
+    // Load key from localStorage or use default from config.js
+    let savedKey = localStorage.getItem("gemini_api_key");
+    if (!savedKey && typeof GEMINI_API_KEY !== "undefined" && GEMINI_API_KEY) {
+        savedKey = GEMINI_API_KEY;
+        localStorage.setItem("gemini_api_key", savedKey);
+    }
     if (savedKey) {
         geminiKeyInput.value = savedKey;
         updateApiStatus(true);
