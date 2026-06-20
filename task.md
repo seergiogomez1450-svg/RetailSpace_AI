@@ -1,21 +1,19 @@
-# Registro de Tareas: Integración de la API de Gemini
+# Registro de Tareas: Migración a la API de Groq
 
 ## 🏗 In Progress / En Curso
 
-*(No hay tareas activas en curso)*
+- `[/]` Verificación y Pruebas Unitarias
 
 ## ⏳ Pending / Pendientes (Backlog)
 
-*(No hay tareas pendientes)*
+- `[ ]` Commit y Push a GitHub
 
 ## ✅ Completed / Completadas
 
-- `[x]` Integración de la API de Gemini (Híbrida & Fallback)
-  - `[x]` Modificar `src/index.html` para añadir el panel de configuración de la API Key y su estado.
-  - `[x]` Modificar/Crear `.api-settings-panel` CSS rules en `src/css/styles.css`.
-  - `[x]` Modificar `src/js/agent.js` para incorporar la función de fetch a la API de Gemini con historial completo y fallback de simulación.
-  - `[x]` Modificar `src/js/app.js` para vincular el panel, guardar la clave en localStorage y gestionar el flujo de respuesta híbrido.
-- `[x]` Verificación y Pruebas Unitarias
-- `[x]` Commit y Push a GitHub
+- `[x]` Migración de Gemini a Groq
+  - `[x]` Modificar `src/js/config.js` con la clave `GROQ_API_KEY`.
+  - `[x]` Modificar `src/index.html` para renombrar a Groq en la UI.
+  - `[x]` Modificar `src/js/app.js` para renombrar claves localStorage y variables.
+  - `[x]` Modificar `src/js/agent.js` para implementar `queryGroqAPI` en formato OpenAI.
 
 *(Las tareas de la versión anterior se encuentran archivadas en la rama main)*

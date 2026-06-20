@@ -114,10 +114,10 @@ class RetailAgent {
 
         if (apiKey) {
             try {
-                responseText = await this.queryGeminiAPI(userMessage, apiKey, command);
+                responseText = await this.queryGroqAPI(userMessage, apiKey, command);
                 isRealAI = true;
             } catch (error) {
-                console.error("Gemini API error, falling back to local simulation:", error);
+                console.error("Groq API error, falling back to local simulation:", error);
                 responseText = "⚠️ *[Simulación Local - Error de API]* " + this.generateAIExplanation(command.location, command.category, command.filters);
             }
         } else {
@@ -130,22 +130,10 @@ class RetailAgent {
     }
 
     /**
-     * Realiza una consulta directa a la API de Google Gemini conservando el contexto.
+     * Realiza una consulta directa a la API de Groq conservando el contexto.
      */
-    async queryGeminiAPI(userMessage, apiKey, detectedCommand) {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-        
-        // Mapear los últimos 10 mensajes del historial para no saturar el contexto de la API
-        const contents = [];
-        const historySlice = this.history.slice(-10);
-        
-        for (const msg of historySlice) {
-            const role = msg.role === "bot" ? "model" : "user";
-            contents.push({
-                role: role,
-                parts: [{ text: msg.text }]
-            });
-        }
+    async queryGroqAPI(userMessage, apiKey, detectedCommand) {
+        const url = "https://api.groq.com/openai/v1/chat/completions";
         
         const cityName = detectedCommand.location.charAt(0).toUpperCase() + detectedCommand.location.slice(1);
         const catLabel = RETAIL_CATEGORIES[detectedCommand.category]?.label || "comercio";
@@ -170,16 +158,35 @@ INFORMACIÓN DEL ENTORNO ACTUAL:
 2. Sé natural y conversacional. No inventes datos exactos de locales individuales, pero sí da pautas útiles sobre las zonas comerciales principales.
 3. Responde siempre en español.`;
 
-        const requestBody = {
-            contents: contents,
-            systemInstruction: {
-                parts: [{ text: systemInstructionText }]
+        // Mapear historial de chat al formato de OpenAI (roles: system, user, assistant)
+        const messages = [
+            {
+                role: "system",
+                content: systemInstructionText
             }
+        ];
+
+        // Mapear los últimos 10 mensajes del historial (excluyendo el bot typing indicator o mensajes vacíos)
+        const historySlice = this.history.slice(-10);
+        for (const msg of historySlice) {
+            const role = msg.role === "bot" ? "assistant" : "user";
+            messages.push({
+                role: role,
+                content: msg.text
+            });
+        }
+
+        const requestBody = {
+            model: "llama-3.3-70b-versatile",
+            messages: messages,
+            temperature: 0.7,
+            max_tokens: 1024
         };
 
         const response = await fetch(url, {
             method: "POST",
             headers: {
+                "Authorization": `Bearer ${apiKey}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(requestBody)
@@ -191,9 +198,9 @@ INFORMACIÓN DEL ENTORNO ACTUAL:
         }
 
         const data = await response.json();
-        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        const responseText = data.choices?.[0]?.message?.content;
         if (!responseText) {
-            throw new Error("No response text returned from Gemini API");
+            throw new Error("No response text returned from Groq API");
         }
 
         return responseText;

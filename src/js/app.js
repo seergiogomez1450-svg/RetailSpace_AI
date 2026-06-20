@@ -66,18 +66,18 @@ function initChat() {
     // API settings elements
     const btnToggleSettings = document.getElementById("btn-toggle-settings");
     const apiSettingsPanel = document.getElementById("api-settings-panel");
-    const geminiKeyInput = document.getElementById("gemini-key-input");
+    const groqKeyInput = document.getElementById("groq-key-input");
     const btnShowKey = document.getElementById("btn-show-key");
     const apiStatusBadge = document.getElementById("api-status-badge");
 
     // Load key from localStorage or use default from config.js
-    let savedKey = localStorage.getItem("gemini_api_key");
-    if (!savedKey && typeof GEMINI_API_KEY !== "undefined" && GEMINI_API_KEY) {
-        savedKey = GEMINI_API_KEY;
-        localStorage.setItem("gemini_api_key", savedKey);
+    let savedKey = localStorage.getItem("groq_api_key");
+    if (!savedKey && typeof GROQ_API_KEY !== "undefined" && GROQ_API_KEY) {
+        savedKey = GROQ_API_KEY;
+        localStorage.setItem("groq_api_key", savedKey);
     }
     if (savedKey) {
-        geminiKeyInput.value = savedKey;
+        groqKeyInput.value = savedKey;
         updateApiStatus(true);
     }
 
@@ -88,26 +88,26 @@ function initChat() {
 
     // Toggle password view
     btnShowKey.addEventListener("click", () => {
-        const isPassword = geminiKeyInput.type === "password";
-        geminiKeyInput.type = isPassword ? "text" : "password";
+        const isPassword = groqKeyInput.type === "password";
+        groqKeyInput.type = isPassword ? "text" : "password";
         btnShowKey.textContent = isPassword ? "🙈" : "👁️";
     });
 
     // Save key on input change
-    geminiKeyInput.addEventListener("input", (e) => {
+    groqKeyInput.addEventListener("input", (e) => {
         const key = e.target.value.trim();
         if (key) {
-            localStorage.setItem("gemini_api_key", key);
+            localStorage.setItem("groq_api_key", key);
             updateApiStatus(true);
         } else {
-            localStorage.removeItem("gemini_api_key");
+            localStorage.removeItem("groq_api_key");
             updateApiStatus(false);
         }
     });
 
     function updateApiStatus(connected) {
         if (connected) {
-            apiStatusBadge.textContent = "🟢 Gemini Activo";
+            apiStatusBadge.textContent = "🟢 Groq Activo";
             apiStatusBadge.className = "status-badge status-connected";
         } else {
             apiStatusBadge.textContent = "🟡 Simulación Local";
@@ -133,8 +133,8 @@ function initChat() {
         const typingIndicator = addTypingIndicator();
 
         try {
-            // Procesar con el agente (pasando la clave API)
-            const apiKey = localStorage.getItem("gemini_api_key") || null;
+            // Procesar con el agente (pasando la clave API de Groq)
+            const apiKey = localStorage.getItem("groq_api_key") || null;
             const result = await agent.processMessage(text, apiKey);
             
             // Eliminar indicador
