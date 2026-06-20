@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Sin publicar] / [Unreleased]
 
 ### Added
+- **Integración con la API de Gemini**:
+  - Panel de configuración visual colapsable en la barra lateral para ingresar la Gemini API Key.
+  - Almacenamiento seguro y persistencia local de la clave en `localStorage`.
+  - Conexión del chatbot a `gemini-1.5-flash` mediante `fetch` conservando los últimos 10 mensajes de historial.
+  - Fallback automático e inmediato al motor de simulación local ante errores o clave no especificada.
 - **RetailSpace AI**: Lanzamiento inicial del buscador y recomendador de locales comerciales retail con IA.
   - Implementación de un dashboard en 3 columnas (Asistente conversacional de IA, Mapa de calor e interactivo Leaflet.js, Listado de locales comerciales).
   - Integración de Overpass API (OpenStreetMap) para descargar locales comerciales reales y Nominatim API para geocodificación.

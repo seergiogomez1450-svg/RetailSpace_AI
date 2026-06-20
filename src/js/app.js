@@ -63,6 +63,54 @@ function initChat() {
     const chatInput = document.getElementById("chat-input");
     const chatFeed = document.getElementById("chat-feed");
     
+    // API settings elements
+    const btnToggleSettings = document.getElementById("btn-toggle-settings");
+    const apiSettingsPanel = document.getElementById("api-settings-panel");
+    const geminiKeyInput = document.getElementById("gemini-key-input");
+    const btnShowKey = document.getElementById("btn-show-key");
+    const apiStatusBadge = document.getElementById("api-status-badge");
+
+    // Load key from localStorage
+    const savedKey = localStorage.getItem("gemini_api_key");
+    if (savedKey) {
+        geminiKeyInput.value = savedKey;
+        updateApiStatus(true);
+    }
+
+    // Toggle settings panel
+    btnToggleSettings.addEventListener("click", () => {
+        apiSettingsPanel.classList.toggle("active");
+    });
+
+    // Toggle password view
+    btnShowKey.addEventListener("click", () => {
+        const isPassword = geminiKeyInput.type === "password";
+        geminiKeyInput.type = isPassword ? "text" : "password";
+        btnShowKey.textContent = isPassword ? "🙈" : "👁️";
+    });
+
+    // Save key on input change
+    geminiKeyInput.addEventListener("input", (e) => {
+        const key = e.target.value.trim();
+        if (key) {
+            localStorage.setItem("gemini_api_key", key);
+            updateApiStatus(true);
+        } else {
+            localStorage.removeItem("gemini_api_key");
+            updateApiStatus(false);
+        }
+    });
+
+    function updateApiStatus(connected) {
+        if (connected) {
+            apiStatusBadge.textContent = "🟢 Gemini Activo";
+            apiStatusBadge.className = "status-badge status-connected";
+        } else {
+            apiStatusBadge.textContent = "🟡 Simulación Local";
+            apiStatusBadge.className = "status-badge status-disconnected";
+        }
+    }
+    
     // Añadir saludo inicial
     addChatBubble("bot", agent.getGreetingResponse());
 
@@ -81,8 +129,9 @@ function initChat() {
         const typingIndicator = addTypingIndicator();
 
         try {
-            // Procesar con el agente
-            const result = await agent.processMessage(text);
+            // Procesar con el agente (pasando la clave API)
+            const apiKey = localStorage.getItem("gemini_api_key") || null;
+            const result = await agent.processMessage(text, apiKey);
             
             // Eliminar indicador
             typingIndicator.remove();

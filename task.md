@@ -1,27 +1,19 @@
-# 📝 Registro de Tareas: RetailSpace AI (Mejoras Estéticas e IA)
+# Registro de Tareas: Integración de la API de Gemini
 
 ## 🏗 In Progress / En Curso
 
-*(No hay tareas activas en curso)*
+- `[/]` Verificación y Pruebas Unitarias
 
 ## ⏳ Pending / Pendientes (Backlog)
 
-*(No hay tareas pendientes)*
+- `[ ]` Commit y Push a GitHub
 
 ## ✅ Completed / Completadas
 
-- [x] **Fase 3: Construcción (`/build`)**
-  - [x] Implementar sugerencia de chips en `src/index.html`.
-  - [x] Añadir efectos de iluminación y estilos de chips en `src/css/styles.css`.
-  - [x] Refinar las expresiones regulares del agente conversacional en `src/js/agent.js`.
-  - [x] Enlazar `performSearch` con mensajes de seguimiento dinámicos y clicks de sugerencias en `src/js/app.js`.
-- [x] **Fase 4: Pruebas y Verificación (`/test`)**
-  - [x] Actualizar `tests/app.test.js` con validaciones de tamaño numérico.
-  - [x] Confirmar ejecución de tests en navegador.
-- [x] **Fase 5: Simplificar (`/code-simplify`)**
-  - [x] Verificación de seguridad.
-- [x] **Fase 6: Entrega (`/ship`)**
-  - [x] Actualizar walkthrough.md y changelog.md.
-- [x] **Fase 1 & 2: Especificar y Planificar**
-  - [x] Diseñar propuestas de interfaz premium (ambient glow, pulsing markers) y refinamiento de NLP.
-  - [x] Crear y guardar `implementation_plan.md` en workspace y brain folder.
+- `[x]` Integración de la API de Gemini (Híbrida & Fallback)
+  - `[x]` Modificar `src/index.html` para añadir el panel de configuración de la API Key y su estado.
+  - `[x]` Modificar `src/css/styles.css` para el estilo premium y transiciones del panel de API Key.
+  - `[x]` Modificar `src/js/agent.js` para incorporar la función de fetch a la API de Gemini con historial completo y fallback de simulación.
+  - `[x]` Modificar `src/js/app.js` para vincular el panel, guardar la clave en localStorage y gestionar el flujo de respuesta híbrido.
+
+*(Las tareas de la versión anterior se encuentran archivadas en la rama main)*

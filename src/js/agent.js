@@ -20,9 +20,10 @@ class RetailAgent {
     /**
      * Procesa un mensaje del usuario y devuelve la respuesta del bot junto con los comandos de mapa si aplica.
      * @param {string} userMessage Mensaje ingresado por el usuario
-     * @returns {Promise<Object>} { responseText, command: { action, location, category, filters } }
+     * @param {string|null} apiKey Clave API de Gemini
+     * @returns {Promise<Object>} { responseText, command: { action, location, category, filters }, isRealAI }
      */
-    async processMessage(userMessage) {
+    async processMessage(userMessage, apiKey = null) {
         this.history.push({ role: "user", text: userMessage });
         const normalizedMsg = userMessage.toLowerCase().trim();
 
@@ -100,20 +101,102 @@ class RetailAgent {
             }
         };
 
-        // Si es solo una conversación general
-        if (!location && !category && this.history.length === 1) {
+        // Si es solo una conversación general y no hay clave API
+        if (!location && !category && this.history.length === 1 && !apiKey) {
             const responseText = this.getGreetingResponse();
             this.history.push({ role: "bot", text: responseText });
-            return { responseText, command };
+            return { responseText, command, isRealAI: false };
         }
 
-        // Simulación de respuesta semántica basada en los locales recomendados
-        // Nota: El listado real filtrado se renderizará dinámicamente en el app.js.
-        // El bot preparará el texto de recomendación adaptado a las intenciones.
-        const responseText = this.generateAIExplanation(command.location, command.category, command.filters);
+        // Generar respuesta
+        let responseText;
+        let isRealAI = false;
+
+        if (apiKey) {
+            try {
+                responseText = await this.queryGeminiAPI(userMessage, apiKey, command);
+                isRealAI = true;
+            } catch (error) {
+                console.error("Gemini API error, falling back to local simulation:", error);
+                responseText = "⚠️ *[Simulación Local - Error de API]* " + this.generateAIExplanation(command.location, command.category, command.filters);
+            }
+        } else {
+            responseText = this.generateAIExplanation(command.location, command.category, command.filters);
+        }
+
         this.history.push({ role: "bot", text: responseText });
 
-        return { responseText, command };
+        return { responseText, command, isRealAI };
+    }
+
+    /**
+     * Realiza una consulta directa a la API de Google Gemini conservando el contexto.
+     */
+    async queryGeminiAPI(userMessage, apiKey, detectedCommand) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        
+        // Mapear los últimos 10 mensajes del historial para no saturar el contexto de la API
+        const contents = [];
+        const historySlice = this.history.slice(-10);
+        
+        for (const msg of historySlice) {
+            const role = msg.role === "bot" ? "model" : "user";
+            contents.push({
+                role: role,
+                parts: [{ text: msg.text }]
+            });
+        }
+        
+        const cityName = detectedCommand.location.charAt(0).toUpperCase() + detectedCommand.location.slice(1);
+        const catLabel = RETAIL_CATEGORIES[detectedCommand.category]?.label || "comercio";
+        
+        let systemInstructionText = `Eres un consultor experto en geomarketing y locales comerciales en España para la plataforma RetailSpace AI.
+Ayuda al usuario a evaluar locales y zonas para su negocio de forma profesional, concisa y atractiva. Usa formato Markdown con emojis de forma moderada.
+
+INFORMACIÓN DEL ENTORNO ACTUAL:
+- Ciudad seleccionada en el mapa: ${cityName}
+- Categoría comercial: ${catLabel}
+`;
+        
+        if (detectedCommand.filters.maxBudget) {
+            systemInstructionText += `- Presupuesto máximo del usuario: ${detectedCommand.filters.maxBudget}€/mes\n`;
+        }
+        if (detectedCommand.filters.sizeFilter) {
+            systemInstructionText += `- Tamaño del local requerido: ${detectedCommand.filters.sizeFilter}\n`;
+        }
+        
+        systemInstructionText += `\nInstrucciones adicionales:
+1. Si el usuario te pregunta por locales o zonas, da un análisis útil e inteligente del sector de ${catLabel} en ${cityName}.
+2. Sé natural y conversacional. No inventes datos exactos de locales individuales, pero sí da pautas útiles sobre las zonas comerciales principales.
+3. Responde siempre en español.`;
+
+        const requestBody = {
+            contents: contents,
+            systemInstruction: {
+                parts: [{ text: systemInstructionText }]
+            }
+        };
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+            const errData = await response.json().catch(() => ({}));
+            throw new Error(errData.error?.message || `HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!responseText) {
+            throw new Error("No response text returned from Gemini API");
+        }
+
+        return responseText;
     }
 
     /**
