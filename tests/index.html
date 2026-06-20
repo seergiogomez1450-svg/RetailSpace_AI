@@ -1,0 +1,94 @@
+<!--
+  Proyecto ESIC — Plataforma de desarrollo para el Proyecto ESIC
+  Copyright (c) 2026 ESIC
+  Licensed under the MIT License. See LICENSE for details.
+  Built with dbv-specs-ops · https://github.com/davidbuenov/dbv-specs-ops
+-->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RetailSpace AI — Suite de Pruebas Unitarias</title>
+    <style>
+        body {
+            background-color: #0B0F19;
+            color: #F8FAFC;
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+        .summary-box {
+            background-color: #161D30;
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        .btn-run {
+            background-color: #6366F1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
+        }
+        .btn-run:hover {
+            opacity: 0.9;
+        }
+        #test-results {
+            margin-top: 20px;
+        }
+        .nav-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #10B981;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🧪 RetailSpace AI — Unit Tests</h1>
+    <p style="color: #94A3B8; margin-bottom: 20px;">
+        Esta suite de pruebas ejecuta aserciones en el navegador para validar la lógica del procesador conversacional y el simulador de métricas comerciales.
+    </p>
+
+    <div class="summary-box">
+        <div id="test-summary" style="margin-bottom: 15px;">
+            Haga clic en el botón inferior para ejecutar la suite de pruebas.
+        </div>
+        <button class="btn-run" onclick="runTests()">Ejecutar Suite de Pruebas</button>
+    </div>
+
+    <div id="test-results">
+        <!-- Logs de ejecución -->
+    </div>
+
+    <a href="../src/index.html" class="nav-link">← Volver al Dashboard Principal</a>
+
+    <!-- Cargar archivos del proyecto necesarios -->
+    <script src="../src/js/mockdata.js"></script>
+    <script src="../src/js/agent.js"></script>
+    <!-- Cargar suite de pruebas -->
+    <script src="app.test.js"></script>
+
+</body>
+</html>
