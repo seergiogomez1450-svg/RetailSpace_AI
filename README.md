@@ -25,6 +25,10 @@
 - CSS3 (Estilos modernos y responsivos)
 - JavaScript (Lógica e interactividad)
 
+**📺 Video de demostración:**
+Puedes ver la presentación y el funcionamiento del proyecto en el siguiente enlace:
+👉 [Ver demostración en YouTube](https://youtu.be/fJxfN-Da77w)
+
 ---
 
 <a name="requirements"></a>
